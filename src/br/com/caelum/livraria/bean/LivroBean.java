@@ -70,6 +70,12 @@ public class LivroBean implements Serializable {
         this.livro = new Livro();
 	}
 	
+	public String formAutor() {
+		System.out.println("Form autor foi chamado......");
+		return "autor?faces-redirect=true";
+		
+	}
+	
 	public void comecaComDigitoUm(FacesContext fc, UIComponent component, Object value) throws ValidatorException {
 		String valor = value.toString();
 		if (!valor.startsWith("1")) {
