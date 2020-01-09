@@ -4,10 +4,13 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core">
 
+<!-- É necessario para que o JSF importe o código JavaScript necessário para o AJAX --> 
+<h:head />
+
 <h:body>
 	<h1>Novo Livro</h1>
 	<h:form>
-		<h:messages/>
+		<h:messages id="messages"/>
 		<fieldset>
 			<legend>Dados do Livro</legend>
 			<h:panelGrid columns="2">
@@ -16,10 +19,13 @@
 				<h:inputText id="titulo" value="#{livroBean.livro.titulo}" required="true" requiredMessage="Título é obrigatório"
 					validatorMessage="Título não pode ser superior a 40">
 					<f:validateLength maximum="40"></f:validateLength>
+					<f:ajax event="blur" render="messages"/>
 				</h:inputText>
 
 				<h:outputLabel value="ISBN:" for="isbn" />
-				<h:inputText id="isbn" value="#{livroBean.livro.isbn}" validator="#{livroBean.comecaComDigitoUm}" />
+				<h:inputText id="isbn" value="#{livroBean.livro.isbn}" validator="#{livroBean.comecaComDigitoUm}">
+					<f:ajax event="blur" render="messages"/>
+				</h:inputText>
 
 				<h:outputLabel value="Preço:" for="preco" />
 				<h:inputText id="preco" value="#{livroBean.livro.preco}" />
@@ -40,17 +46,20 @@
 				<f:selectItems value="#{livroBean.autores}" var="autor"
 					itemLabel="#{autor.nome}" itemValue="#{autor.id}"></f:selectItems>
 			</h:selectOneMenu>
-			<h:commandButton value="Gravar Autor"
-				action="#{livroBean.gravarAutor}"></h:commandButton>
+			<h:commandButton value="Gravar Autor" action="#{livroBean.gravarAutor}">
+				<f:ajax execute="autor" render="tabelaAutores"/>
+			</h:commandButton>
 
-			<h:dataTable value="#{livroBean.autoresDoLivro}" var="autor">
+			<h:dataTable value="#{livroBean.autoresDoLivro}" var="autor" id="tabelaAutores">
 				<h:column>
 					<h:outputText value="#{autor.nome}"></h:outputText>
 				</h:column>
 			</h:dataTable>
 		</fieldset>
 
-		<h:commandButton value="Gravar" action="#{livroBean.gravar}" />
+		<h:commandButton value="Gravar" action="#{livroBean.gravar}">
+			<f:ajax execute="@form" render="@form :tabelaLivros"/>
+		</h:commandButton>
 	</h:form>
 
 	<h:dataTable id="tabelaLivros" value="#{livroBean.livros}" var="livro">
